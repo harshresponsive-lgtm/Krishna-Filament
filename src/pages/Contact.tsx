@@ -12,7 +12,7 @@ export default function Contact() {
       icon: Phone,
       title: 'Phone',
       label: 'Call Us',
-      lines: [  'Tel No:  02525 271 881/83', 'Fax:02525-271 882'],
+      lines: [  'Tel No:  02525 271 881/83', 'Fax: 02525-271 882'],
     },
     {
       icon: Mail,
