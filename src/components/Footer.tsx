@@ -1,6 +1,8 @@
 import { Link } from '@/router';
 
 export default function Footer() {
+  
+
   return (
     <footer className="bg-brand-950 text-brand-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -17,12 +19,10 @@ export default function Footer() {
 
               <div className="leading-tight">
                 <div className="font-bold text-white">
-                  Krishna Filament
+                  KRISHNA FILAMENT INDUSTRIES LIMITED
                 </div>
 
-                <div className="mt-1 text-[11px] uppercase tracking-[0.16em] text-brand-300">
-                  Industries Limited
-                </div>
+                
               </div>
             </Link>
 
@@ -71,7 +71,6 @@ export default function Footer() {
         </div>
 
         {/* Legal Links */}
-     
 
       </div>
     </footer>

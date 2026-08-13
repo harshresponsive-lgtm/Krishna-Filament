@@ -84,12 +84,21 @@ export default function About() {
 
               <p className="mt-6 text-lg leading-8 text-gray-600">
                 As a publicly listed company, we are committed to the highest
-                standards of corporate governance, transparency and shareholder
-                value creation.
+                standards of corporate governance, transparency and
+                shareholder value creation.
               </p>
 
+              {/* CIN */}
+              <div className="mt-8 inline-flex items-center rounded-lg border border-gray-200 bg-gray-50 px-5 py-3">
+                <span className="text-sm font-semibold text-brand-950">
+                  CIN No:
+                </span>
+                <span className="ml-2 text-sm text-gray-600">
+                  L25200MH1988PLC048178
+                </span>
+              </div>
+
               {/* Story highlights */}
-              
             </div>
           </div>
         </div>

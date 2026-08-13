@@ -60,7 +60,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col leading-tight">
               <span className="font-bold text-brand-800 text-base sm:text-lg tracking-tight">
-                Krishna Filament Industries Limited   
+                KRISHNA FILAMENT INDUSTRIES LIMITED
               </span>
              
             </div>

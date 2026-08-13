@@ -6,21 +6,29 @@ export default function Contact() {
       icon: MapPin,
       title: 'Registered Office',
       label: 'Visit Us',
-      lines: ['Industrial Area,', 'India'],
+      lines: ['Betegaon Village, Boisar (East),', 'Taluka Palghar, Dist. Thane 401501,', 'Maharashtra, India'],
     },
     {
       icon: Phone,
       title: 'Phone',
       label: 'Call Us',
-      lines: ['+91 00000 00000', '+91 00000 00000'],
+      lines: [  'Tel No:  02525 271 881/83', 'Fax: +91 02525-271 882'],
     },
     {
       icon: Mail,
       title: 'Email',
       label: 'Write to Us',
-      lines: ['investor@krishnafilament.com', 'info@krishnafilament.com'],
+      lines: ['maviindustriesltd@gmail.com'],
     },
   ];
+
+  const companyDetails = {
+    cin: 'L25200MH1988PLC048178',
+    registeredOffice: 'Betegaon Village, Boisar (East), Taluka Palghar, Dist. Thane 401501-Maharashtra, India',
+    tel: '02525 271 881/83',
+    fax: '02525-271 882',
+    email: 'maviindustriesltd@gmail.com',
+  };
 
   return (
     <div className="animate-fade-in pt-20">
