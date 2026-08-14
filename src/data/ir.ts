@@ -56,7 +56,7 @@ export const irItems: IRItem[] = [
     icon: 'Megaphone',
   },
   {
-    slug: 'investor-relations',
+    slug: 'investor-grievance',
     label: 'Investor Grievance',
     icon: 'Mail',
   },

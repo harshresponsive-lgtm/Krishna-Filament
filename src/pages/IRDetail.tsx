@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Link, useRouter } from '@/router';
 import { irItems, irSlugMap } from '@/data/ir';
+import { supabase } from '@/lib/supabase';
+
 import {
   ScrollText,
   FileText,
@@ -35,104 +38,136 @@ const iconMap: Record<
   Mail,
 };
 
-const annualReports = [
-  { year: '2021-22', file: 'AR 21-22.pdf' },
-  { year: '2022-23', file: 'AR 22-23.pdf' },
-  { year: '2023-24', file: 'AR 23-24.pdf' },
-  { year: '2024-25', file: 'AR 24-25.pdf' },
-];
-
-const financialResults = [
-  {
-    label: 'June 2026 Financial Statement',
-    file: 'KFIL June 2026 FS.pdf',
-  },
-  {
-    label: 'March 2026 Financial Statement',
-    file: 'KFIL March 2026 FS.pdf',
-  },
-];
-
-const shareholdingReports = [
-  {
-    label: 'Shareholding Pattern Q4 2025-26',
-    file: 'SHP Q4 25-26.pdf',
-  },
-  {
-    label: 'Shareholding Pattern Q1 2026-27',
-    file: 'SHP Q1 26-27.pdf',
-  },
-];
-
-const updateAnnouncementsByYear = [
-  {
-    year: '2026',
-    files: [
-      {
-        label: 'Outcome of Board Meeting 16.05.2026',
-        file: 'OutcomeofBM16052026KFIL.pdf',
-      },
-      {
-        label: 'Outcome of Board Meeting 22.07.2026',
-        file: 'OutcomeofBM22072026KFIL.pdf',
-      },
-      {
-        label: 'SE BM Intimation 16.05.2026',
-        file: 'SE BM Intimation_16.05.2026 KFIL.pdf',
-      },
-      {
-        label: 'SE BM Intimation 18.07.2026',
-        file: 'SEBMIntimation18072026 KFIL.pdf',
-      },
-    ],
-  },
-  {
-    year: '2025',
-    files: [
-      {
-        label: 'SE final letter dated 11.08.2025',
-        file: 'SE final letter dated 11.08.2025.pdf',
-      },
-      {
-        label: 'SE letter final signed 05.08.2025',
-        file: 'SE letter final signed_05.08.2025.pdf',
-      },
-      {
-        label: 'SE letter final signed 06.08.2025',
-        file: 'SE letter final signed_06.02.2026.pdf',
-      },
-      {
-        label: 'SE letter final signed 08.11.2025',
-        file: 'SE letter final signed_08.11.2025.pdf',
-      },
-      {
-        label: 'SE letter final signed 13.11.2025',
-        file: 'SE letter final signed_13.11.2025.pdf',
-      },
-      {
-        label: 'SE letter final signed 27.05.2025',
-        file: 'SE letter final signed_27.05.2025.pdf',
-      },
-      {
-        label: 'SE letter signed 14.02.2026',
-        file: 'SE letter signed_14.02.2026.pdf',
-      },
-      {
-        label: 'SE letter signed 20.05.2025',
-        file: 'SE letter signed_20.05.2025.pdf',
-      },
-      {
-        label: 'SEmayank 09.09.2025',
-        file: 'SEmayank 09.09.2025.pdf',
-      },
-    ],
-  },
-];
+type Document = {
+  id: string;
+  title: string;
+  year: string | null;
+  file_name: string;
+  file_path: string;
+  published_date: string | null;
+  is_published: boolean;
+  sort_order: number;
+};
 
 export default function IRDetail({ slug }: { slug: string }) {
   const { navigate } = useRouter();
+
   const item = irSlugMap[slug];
 
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  /*
+   * Load documents from Supabase
+   */
+  useEffect(() => {
+    async function loadDocuments() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        /*
+         * STEP 1
+         *
+         * Find the IR category using the URL slug.
+         *
+         * Example:
+         *
+         * /ir/annual-reports
+         *
+         * slug = annual-reports
+         *
+         * IMPORTANT:
+         * ir_categories uses "name", not "label".
+         */
+        const { data: category, error: categoryError } = await supabase
+          .from('ir_categories')
+          .select('id, slug, name')
+          .eq('slug', slug)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (categoryError) {
+          throw new Error(categoryError.message);
+        }
+
+        /*
+         * If the category does not exist,
+         * show a proper error instead of allowing
+         * Supabase to throw a single-object error.
+         */
+        if (!category) {
+          throw new Error(
+            `Investor Relations category "${slug}" was not found.`
+          );
+        }
+
+        /*
+         * STEP 2
+         *
+         * Get ALL published documents belonging
+         * to this category.
+         *
+         * IMPORTANT:
+         *
+         * DO NOT use .single() here.
+         *
+         * A category can have:
+         *
+         * 0 documents
+         * 1 document
+         * 20 documents
+         * 50 documents
+         *
+         * Supabase therefore returns an ARRAY.
+         */
+        const { data: docs, error: documentsError } = await supabase
+          .from('ir_documents')
+          .select(`
+            id,
+            title,
+            year,
+            file_name,
+            file_path,
+            published_date,
+            is_published,
+            sort_order
+          `)
+          .eq('category_id', category.id)
+          .eq('is_published', true)
+          .order('sort_order', { ascending: true });
+
+        if (documentsError) {
+          throw new Error(documentsError.message);
+        }
+
+        /*
+         * If there are no documents,
+         * Supabase returns [].
+         *
+         * This is NOT an error.
+         */
+        setDocuments(docs ?? []);
+      } catch (err) {
+        console.error('Failed to load IR documents:', err);
+
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Failed to load documents.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDocuments();
+  }, [slug]);
+
+  /*
+   * Invalid frontend category
+   */
   if (!item) {
     return (
       <div className="flex min-h-screen items-center justify-center pb-20 pt-32">
@@ -148,10 +183,10 @@ export default function IRDetail({ slug }: { slug: string }) {
           </p>
 
           <Link
-            to="/ir/investor-relations"
+            to="/"
             className="mt-6 inline-flex items-center gap-2 font-semibold text-brand-700 hover:underline"
           >
-            Back to Investor Relations
+            Back to Home
             <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
@@ -161,13 +196,78 @@ export default function IRDetail({ slug }: { slug: string }) {
 
   const Icon = iconMap[item.icon] ?? Info;
 
+  /*
+   * Create public Supabase Storage URL.
+   *
+   * If file_path is already a complete URL,
+   * use it directly.
+   *
+   * Otherwise generate the public URL
+   * from the investor-documents bucket.
+   */
+  function getDocumentUrl(filePath: string) {
+    if (
+      filePath.startsWith('http://') ||
+      filePath.startsWith('https://')
+    ) {
+      return filePath;
+    }
+
+    const { data } = supabase.storage
+      .from('investor-documents')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  }
+
+  /*
+   * Group documents by year.
+   *
+   * Example:
+   *
+   * {
+   *   "2026": [...],
+   *   "2025": [...]
+   * }
+   */
+  const documentsByYear = documents.reduce(
+    (groups, document) => {
+      const year = document.year || 'Other';
+
+      if (!groups[year]) {
+        groups[year] = [];
+      }
+
+      groups[year].push(document);
+
+      return groups;
+    },
+    {} as Record<string, Document[]>
+  );
+
+  /*
+   * Sort years newest first.
+   */
+  const sortedYears = Object.keys(documentsByYear).sort(
+    (a, b) =>
+      b.localeCompare(a, undefined, {
+        numeric: true,
+      })
+  );
+
   return (
     <div className="animate-fade-in pt-20">
-      {/* Header */}
+
+      {/* =========================================================
+          HEADER
+      ========================================================= */}
+
       <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800">
         <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+
           {/* Breadcrumb */}
           <div className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-brand-200">
+
             <Link
               to="/"
               className="transition-colors hover:text-white"
@@ -177,22 +277,21 @@ export default function IRDetail({ slug }: { slug: string }) {
 
             <ChevronRight className="h-3.5 w-3.5" />
 
-            <Link
-              to="/ir/investor-relations"
-              className="transition-colors hover:text-white"
-            >
+            <span className="font-medium text-white">
               Investor Relations
-            </Link>
+            </span>
 
             <ChevronRight className="h-3.5 w-3.5" />
 
             <span className="font-medium text-white">
               {item.label}
             </span>
+
           </div>
 
           {/* Page Title */}
           <div className="flex items-center gap-4">
+
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-accent-400/30 bg-accent-400/20">
               <Icon className="h-7 w-7 text-accent-300" />
             </div>
@@ -202,15 +301,26 @@ export default function IRDetail({ slug }: { slug: string }) {
                 {item.label}
               </h1>
             </div>
+
           </div>
+
         </div>
       </section>
 
-      {/* Body */}
+      {/* =========================================================
+          BODY
+      ========================================================= */}
+
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
-        {/* Sidebar */}
+
+        {/* =======================================================
+            SIDEBAR
+        ======================================================= */}
+
         <aside className="h-fit lg:sticky lg:top-24">
+
           <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
+
             <div className="border-b border-brand-100 bg-brand-50 px-4 py-3">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-800">
                 Investor Relations
@@ -218,6 +328,7 @@ export default function IRDetail({ slug }: { slug: string }) {
             </div>
 
             <nav className="py-1">
+
               {irItems.map((ir) => (
                 <button
                   key={ir.slug}
@@ -231,180 +342,184 @@ export default function IRDetail({ slug }: { slug: string }) {
                   {ir.label}
                 </button>
               ))}
+
             </nav>
+
           </div>
+
         </aside>
 
-        {/* Content */}
+        {/* =======================================================
+            CONTENT
+        ======================================================= */}
+
         <main className="min-w-0">
-          <div className="max-w-none">
-            <h2 className="text-2xl font-bold text-brand-900">
-              Documents
-            </h2>
 
-            <div className="mt-6 space-y-3">
-              {item.slug === 'annual-reports' ? (
-                annualReports.map((report) => (
-                  <div
-                    key={report.year}
-                    className="flex items-center justify-between rounded-lg border border-gray-100 p-4 transition-all hover:border-brand-200 hover:shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50">
-                        <FileText className="h-5 w-5 text-brand-600" />
-                      </div>
+          <h2 className="text-2xl font-bold text-brand-900">
+            Documents
+          </h2>
 
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">
-                          Annual Report {report.year}
-                        </p>
+          {/* =====================================================
+              LOADING
+          ===================================================== */}
 
-                        <p className="text-xs text-gray-400">
-                          PDF · {report.year}
-                        </p>
-                      </div>
-                    </div>
+          {loading && (
+            <div className="mt-6 rounded-xl border border-gray-100 bg-gray-50 p-8 text-center">
 
-                    <a
-                      href={`/annual-reports/${encodeURIComponent(
-                        report.file
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </a>
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
+
+              <p className="mt-4 text-sm text-gray-500">
+                Loading documents...
+              </p>
+
+            </div>
+          )}
+
+          {/* =====================================================
+              ERROR
+          ===================================================== */}
+
+          {!loading && error && (
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-6">
+
+              <div className="flex items-start gap-3">
+
+                <Info className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+
+                <div>
+
+                  <h3 className="font-semibold text-red-800">
+                    Unable to load documents
+                  </h3>
+
+                  <p className="mt-1 text-sm text-red-700">
+                    {error}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+          )}
+
+          {/* =====================================================
+              NO DOCUMENTS
+          ===================================================== */}
+
+          {!loading &&
+            !error &&
+            documents.length === 0 && (
+              <div className="mt-6 rounded-xl border border-gray-100 bg-brand-50 p-6">
+
+                <div className="flex items-start gap-3">
+
+                  <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
+
+                  <div>
+
+                    <h3 className="font-semibold text-brand-800">
+                      No documents available
+                    </h3>
+
+                    <p className="mt-1 text-sm leading-relaxed text-brand-700">
+                      Documents for this section are currently being
+                      prepared. Please check back later for updates.
+                    </p>
+
                   </div>
-                ))
-              ) : item.slug === 'financial-results' ? (
-                financialResults.map((report) => (
+
+                </div>
+
+              </div>
+            )}
+
+          {/* =====================================================
+              DOCUMENT LIST
+          ===================================================== */}
+
+          {!loading &&
+            !error &&
+            documents.length > 0 && (
+              <div className="mt-6 space-y-6">
+
+                {sortedYears.map((year) => (
+
                   <div
-                    key={report.file}
-                    className="flex items-center justify-between rounded-lg border border-gray-100 p-4 transition-all hover:border-brand-200 hover:shadow-sm"
+                    key={year}
+                    className="space-y-3"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50">
-                        <FileText className="h-5 w-5 text-brand-600" />
-                      </div>
 
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">
-                          {report.label}
-                        </p>
+                    {/* Show year only when there are multiple years */}
+                    {sortedYears.length > 1 && (
+                      <h3 className="text-xl font-semibold text-brand-900">
+                        {year}
+                      </h3>
+                    )}
 
-                        <p className="text-xs text-gray-400">
-                          PDF
-                        </p>
-                      </div>
-                    </div>
+                    {documentsByYear[year].map((document) => {
 
-                    <a
-                      href={`/financial-results/${encodeURIComponent(
-                        report.file
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </a>
-                  </div>
-                ))
-              ) : item.slug === 'shareholding-pattern' ? (
-                shareholdingReports.map((report) => (
-                  <div
-                    key={report.file}
-                    className="flex items-center justify-between rounded-lg border border-gray-100 p-4 transition-all hover:border-brand-200 hover:shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50">
-                        <FileText className="h-5 w-5 text-brand-600" />
-                      </div>
+                      const documentUrl =
+                        getDocumentUrl(
+                          document.file_path
+                        );
 
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">
-                          {report.label}
-                        </p>
-
-                        <p className="text-xs text-gray-400">
-                          PDF
-                        </p>
-                      </div>
-                    </div>
-
-                    <a
-                      href={`/shareholding-pattern/${encodeURIComponent(
-                        report.file
-                      )}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </a>
-                  </div>
-                ))
-              ) : item.slug === 'updates-announcements' ? (
-                updateAnnouncementsByYear.map((group) => (
-                  <div key={group.year} className="space-y-3">
-                    <h4 className="mt-8 text-xl font-semibold text-brand-900">
-                      {group.year}
-                    </h4>
-
-                    <div className="space-y-3">
-                      {group.files.map((report) => (
+                      return (
                         <div
-                          key={report.file}
-                          className="flex items-center justify-between rounded-lg border border-gray-100 p-4 transition-all hover:border-brand-200 hover:shadow-sm"
+                          key={document.id}
+                          className="flex flex-col gap-4 rounded-lg border border-gray-100 p-4 transition-all hover:border-brand-200 hover:shadow-sm sm:flex-row sm:items-center sm:justify-between"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50">
+
+                          {/* Document information */}
+                          <div className="flex min-w-0 items-center gap-3">
+
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50">
                               <FileText className="h-5 w-5 text-brand-600" />
                             </div>
 
-                            <div>
-                              <p className="text-sm font-medium text-gray-800">
-                                {report.label}
+                            <div className="min-w-0">
+
+                              <p className="break-words text-sm font-medium text-gray-800">
+                                {document.title}
                               </p>
 
-                              <p className="text-xs text-gray-400">
+                              <p className="mt-1 text-xs text-gray-400">
                                 PDF
+                                {document.year
+                                  ? ` · ${document.year}`
+                                  : ''}
                               </p>
+
                             </div>
+
                           </div>
 
+                          {/* Download button */}
                           <a
-                            href={`/updates-announcements/${group.year}/${encodeURIComponent(
-                              report.file
-                            )}`}
+                            href={documentUrl}
                             target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
+                            rel="noopener noreferrer"
+                            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
                           >
                             <Download className="h-4 w-4" />
                             Download
                           </a>
+
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })}
+
                   </div>
-                ))
-              ) : (
-                <div className="rounded-xl border border-gray-100 bg-brand-50 p-6">
-                  <p className="text-sm leading-relaxed text-brand-800">
-                    Documents for this section are being prepared. Please
-                    check back soon for updated information.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+
+                ))}
+
+              </div>
+            )}
+
         </main>
+
       </div>
+
     </div>
   );
 }

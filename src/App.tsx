@@ -5,7 +5,8 @@ import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import IRDetail from '@/pages/IRDetail';
-
+import AdminLogin from './pages/AdminLogin';
+import AdminInvestorDocuments from '@/pages/AdminInvestorDocuments';
 function NotFound() {
   return (
     <div className="pt-32 pb-20 min-h-screen flex items-center justify-center">
@@ -21,18 +22,32 @@ function Routes() {
   const { path } = useRouter();
 
   let page: React.ReactNode;
-  if (path === '/') page = <Home />;
-  else if (path === '/about') page = <About />;
-  else if (path === '/contact') page = <Contact />;
-  else if (path.startsWith('/ir/')) {
+
+  if (path === '/admin/login') {
+    page = <AdminLogin />;
+  } else if (path === '/') {
+    page = <Home />;
+  } else if (path === '/about') {
+    page = <About />;
+  } else if (path === '/contact') {
+    page = <Contact />;
+  } else if (path === '/admin/investor-documents') {
+    page = <AdminInvestorDocuments />;
+  } else if (path.startsWith('/ir/')) {
     const slug = path.replace('/ir/', '');
     page = <IRDetail slug={slug} />;
-  } else page = <NotFound />;
+  } else {
+    page = <NotFound />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      <main className="flex-1">{page}</main>
+
+      <main className="flex-1 pt-20">
+        {page}
+      </main>
+
       <Footer />
     </div>
   );

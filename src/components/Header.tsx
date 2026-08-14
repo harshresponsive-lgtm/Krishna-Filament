@@ -6,7 +6,7 @@ import { irItems } from '@/data/ir';
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
-  { to: '/ir/investor-relations', label: 'Investor Relations', dropdown: true },
+  { to: '/ir/investor-grievance', label: 'Investor Grievance', dropdown: true },
   { to: '/contact', label: 'Contact Us' },
 ];
 
@@ -41,7 +41,7 @@ export default function Header() {
 
   const isActive = (to: string) => {
     if (to === '/') return path === '/';
-    if (to === '/ir/investor-relations') return path.startsWith('/ir');
+    if (to === '/ir/investor-grievance') return path.startsWith('/ir');
     return path.startsWith(to);
   };
 
@@ -51,7 +51,7 @@ export default function Header() {
         scrolled || mobileOpen ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-md shadow-sm'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-5  ">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
