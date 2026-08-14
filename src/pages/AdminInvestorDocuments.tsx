@@ -10,9 +10,21 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
+  LogOut,
 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
+import { useRouter } from '@/router';
+
+/*
+ * Keep this in sync with the `file_size_limit` configured on the
+ * `investor-documents` Storage bucket (see handover doc / Supabase
+ * dashboard). This client-side check is only a UX nicety — it stops
+ * an admin uploading an oversized file and waiting for the network
+ * round trip, it is NOT the security boundary. The bucket-level
+ * limit is what actually enforces this.
+ */
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
 type Category = {
   id: string;
@@ -44,6 +56,8 @@ type Message = {
 } | null;
 
 export default function AdminInvestorDocuments() {
+  const { navigate } = useRouter();
+
   const [documents, setDocuments] = useState<Document[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -99,7 +113,7 @@ export default function AdminInvestorDocuments() {
         text: error.message,
       });
     } else {
-      setDocuments((data ?? []) as Document[]);
+      setDocuments((data ?? []) as unknown as Document[]);
     }
 
     setLoading(false);
@@ -159,6 +173,17 @@ export default function AdminInvestorDocuments() {
 
   /*
    * ---------------------------------------------------------
+   * LOGOUT
+   * ---------------------------------------------------------
+   */
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    navigate('/admin/login');
+  }
+
+  /*
+   * ---------------------------------------------------------
    * FILE SELECT
    * ---------------------------------------------------------
    */
@@ -183,6 +208,21 @@ export default function AdminInvestorDocuments() {
       setMessage({
         type: 'error',
         text: 'Please select a PDF file.',
+      });
+
+      event.target.value = '';
+      setSelectedFile(null);
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setMessage({
+        type: 'error',
+        text: `File is too large. Maximum allowed size is ${(
+          MAX_FILE_SIZE_BYTES /
+          1024 /
+          1024
+        ).toFixed(0)} MB.`,
       });
 
       event.target.value = '';
@@ -273,6 +313,19 @@ export default function AdminInvestorDocuments() {
       setMessage({
         type: 'error',
         text: 'Only PDF files are allowed.',
+      });
+
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+      setMessage({
+        type: 'error',
+        text: `File is too large. Maximum allowed size is ${(
+          MAX_FILE_SIZE_BYTES /
+          1024 /
+          1024
+        ).toFixed(0)} MB.`,
       });
 
       return;
@@ -601,17 +654,28 @@ export default function AdminInvestorDocuments() {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setShowUploadForm(true);
-              setMessage(null);
-            }}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-800"
-          >
-            <Upload className="h-4 w-4" />
-            Upload Document
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setShowUploadForm(true);
+                setMessage(null);
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-800"
+            >
+              <Upload className="h-4 w-4" />
+              Upload Document
+            </button>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* ------------------------------------------------ */}

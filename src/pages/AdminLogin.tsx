@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from '@/router';
 import { supabase } from '@/lib/supabase';
 import { LockKeyhole, Mail } from 'lucide-react';
@@ -11,6 +11,14 @@ export default function AdminLogin() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        navigate('/admin/investor-documents');
+      }
+    });
+  }, [navigate]);
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
