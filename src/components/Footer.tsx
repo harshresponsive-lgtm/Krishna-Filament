@@ -1,11 +1,9 @@
 import { Link } from '@/router';
 
 export default function Footer() {
-  
-
   return (
     <footer className="bg-brand-950 text-brand-100">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  ">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {/* Main Footer */}
         <div className="grid gap-12 py-16 md:grid-cols-[1.5fr_1fr] lg:gap-32">
@@ -21,16 +19,134 @@ export default function Footer() {
                 <div className="font-bold text-white">
                   KRISHNA FILAMENT INDUSTRIES LIMITED
                 </div>
-
-                
               </div>
             </Link>
 
-            <p className="mt-6 max-w-md text-sm leading-7 text-brand-200">
-              A leading manufacturer of high-quality ropes and filament
-              products, serving industries worldwide with strength,
-              reliability and innovation.
-            </p>
+            
+
+            {/* Contact Information */}
+            <div className="mt-8 space-y-5">
+
+              {/* Address */}
+              <div className="flex items-start gap-3">
+                <svg
+                  className="mt-1 h-5 w-5 shrink-0 text-brand-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-400">
+                    Registered Office
+                  </p>
+
+                  <p className="mt-1 text-sm leading-6 text-brand-200">
+                    Betegaon Village, Boisar (East), Taluka Palghar,
+                    <br />
+                     Dist. Thane 401501,
+                    
+                    Maharashtra, India
+                  </p>
+                </div>
+              </div>
+
+              {/* Telephone */}
+              <div className="flex items-start gap-3">
+                <svg
+                  className="mt-0.5 h-5 w-5 shrink-0 text-brand-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 11.19 18.6a19.5 19.5 0 0 1-5.79-5.79A19.8 19.8 0 0 1 3.08 4.18 2 2 0 0 1 5.07 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.97 9.73a16 16 0 0 0 5.79 5.79l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" />
+                </svg>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-400">
+                    Tel No.
+                  </p>
+
+                  <a
+                    href="tel:02525271881"
+                    className="mt-1 block text-sm text-brand-200 transition-colors hover:text-white"
+                  >
+                    02525 271 881/83
+                  </a>
+                </div>
+              </div>
+
+              {/* Fax */}
+              <div className="flex items-start gap-3">
+                <svg
+                  className="mt-0.5 h-5 w-5 shrink-0 text-brand-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 9V2h12v7" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" rx="1" />
+                  <path d="M17 12h.01" />
+                </svg>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-400">
+                    Fax
+                  </p>
+
+                  <p className="mt-1 text-sm text-brand-200">
+                    02525-271 882
+                  </p>
+                </div>
+              </div>
+
+              {/* Write to Us */}
+              <div className="flex items-start gap-3">
+                <svg
+                  className="mt-0.5 h-5 w-5 shrink-0 text-brand-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-400">
+                    Email
+                  </p>
+
+                  <a
+                    href="mailto:maviindustriesltd@gmail.com"
+                    className="mt-0.5 block text-sm text-brand-200 transition-colors hover:text-white"
+                  >
+                    maviindustriesltd@gmail.com
+                  </a>
+                </div>
+              </div>
+
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -66,12 +182,21 @@ export default function Footer() {
                   Contact Us
                 </Link>
               </li>
+
+              <li>
+                <Link
+                  to="/ir/policy"
+                  className="text-sm text-brand-200 transition-colors hover:text-white"
+                >
+                  Investor Grievance
+                </Link>
+              </li>
             </ul>
           </div>
+
         </div>
 
         {/* Legal Links */}
-
       </div>
     </footer>
   );

@@ -31,7 +31,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="animate-fade-in pt-20">
+    <div className="animate-fade-in ">
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-950">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800" />
@@ -42,9 +42,8 @@ export default function Contact() {
             <h1 className="mt-5 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
               Contact Us
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-brand-100/90 sm:text-lg">
-              We are here to help. Reach out to us for any investor or general
-              inquiries.
+            <p className="mt-5 max-w-2xl text-base leading-7 text-brand-100/90 sm:text-lg">
+              We are here to help.Reach out to us for any investor or general enquiry.
             </p>
           </div>
         </div>
@@ -53,15 +52,7 @@ export default function Contact() {
       {/* Contact Information */}
       <section className="bg-gray-50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.15em] text-brand-700">
-              Contact Information
-            </p>
-
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-brand-950 sm:text-3xl">
-              We would be happy to hear from you
-            </h2>
-          </div>
+          
 
           <div className="grid gap-6 md:grid-cols-3">
             {contactCards.map((card) => {

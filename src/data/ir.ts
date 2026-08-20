@@ -15,16 +15,16 @@ export const irItems: IRItem[] = [
     label: 'Disclosures under Regulation 46 of SEBI (LODR) Regulations',
     icon: 'FileText',
   },
-  {
-    slug: 'board-of-directors',
-    label: 'Board of Directors',
-    icon: 'Users',
-  },
-  {
-    slug: 'committee-composition',
-    label: 'Composition of Committee',
-    icon: 'Network',
-  },
+  // {
+  //   slug: 'board-of-directors',
+  //   label: 'Board of Directors',
+  //   icon: 'Users',
+  // },
+  // {
+  //   slug: 'committee-composition',
+  //   label: 'Composition of Committee',
+  //   icon: 'Network',
+  // },
   {
     slug: 'financial-results',
     label: 'Financial Results',
@@ -35,11 +35,11 @@ export const irItems: IRItem[] = [
     label: 'Annual Reports',
     icon: 'BookOpen',
   },
-  {
-    slug: 'annual-return',
-    label: 'Annual Return',
-    icon: 'FileSpreadsheet',
-  },
+  // {
+  //   slug: 'annual-return',
+  //   label: 'Annual Return',
+  //   icon: 'FileSpreadsheet',
+  // },
   {
     slug: 'corporate-governance',
     label: 'Corporate Governance',
@@ -55,11 +55,11 @@ export const irItems: IRItem[] = [
     label: 'Updates & Announcements',
     icon: 'Megaphone',
   },
-  {
-    slug: 'investor-grievance',
-    label: 'Investor Grievance',
-    icon: 'Mail',
-  },
+  // {
+  //   slug: 'investor-grievance',
+  //   label: 'Investor Grievance',
+  //   icon: 'Mail',
+  // },
 ];
 
 export const irSlugMap: Record<string, IRItem> = Object.fromEntries(

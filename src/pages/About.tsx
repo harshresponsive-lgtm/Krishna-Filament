@@ -25,7 +25,7 @@ export default function About() {
   ];
 
   return (
-    <div className="animate-fade-in pt-20">
+    <div className="animate-fade-in ">
       {/* Hero */}
       <section className="relative overflow-hidden bg-brand-950">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800" />
@@ -40,10 +40,7 @@ export default function About() {
               About Us
             </h1>
 
-            <p className="mt-5 max-w-2xl text-base leading-7 text-brand-100/90 sm:text-lg">
-              A legacy of manufacturing excellence in rope and filament
-              products, built on quality, innovation and reliability.
-            </p>
+            
           </div>
         </div>
       </section>
@@ -88,15 +85,7 @@ export default function About() {
                 shareholder value creation.
               </p>
 
-              {/* CIN */}
-              <div className="mt-8 inline-flex items-center rounded-lg border border-gray-200 bg-gray-50 px-5 py-3">
-                <span className="text-sm font-semibold text-brand-950">
-                  CIN No:
-                </span>
-                <span className="ml-2 text-sm text-gray-600">
-                  L25200MH1988PLC048178
-                </span>
-              </div>
+              
 
               {/* Story highlights */}
             </div>
@@ -172,52 +161,8 @@ export default function About() {
         </div>
       </section>
 
-      {/* Values */}
-      <section className="bg-white py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-600">
-              Our Values
-            </span>
+      
 
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-brand-950 sm:text-4xl">
-              What Drives Us Forward
-            </h2>
-
-            <p className="mt-4 leading-7 text-gray-600">
-              The principles that shape our products, relationships and
-              approach to business.
-            </p>
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((value) => {
-              const Icon = value.icon;
-
-              return (
-                <div
-                  key={value.title}
-                  className="group rounded-2xl border border-gray-200 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-xl"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700 transition-colors duration-300 group-hover:bg-brand-700 group-hover:text-white">
-                    <Icon className="h-5 w-5" strokeWidth={1.8} />
-                  </div>
-
-                  <h3 className="mt-6 font-semibold text-brand-950">
-                    {value.title}
-                  </h3>
-
-                  <p className="mt-3 text-sm leading-6 text-gray-500">
-                    {value.desc}
-                  </p>
-
-                  <div className="mt-6 h-px w-8 bg-brand-200 transition-all duration-300 group-hover:w-12 group-hover:bg-brand-700" />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
