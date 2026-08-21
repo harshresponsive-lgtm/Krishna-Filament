@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useRouter } from '@/router';
 import { irItems, irSlugMap } from '@/data/ir';
+import { disclosureItems } from '@/data/disclosures';
 import { supabase } from '@/lib/supabase';
 
 import {
@@ -49,6 +50,60 @@ type Document = {
   sort_order: number;
 };
 
+function DisclosureTable() {
+  return (
+    <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+          <thead className="bg-brand-50 text-brand-900">
+            <tr>
+              <th className="w-20 border-b border-brand-100 px-4 py-4 font-semibold">
+                Sr. No.
+              </th>
+              <th className="border-b border-brand-100 px-4 py-4 font-semibold">
+                Particulars
+              </th>
+              <th className="w-44 border-b border-brand-100 px-4 py-4 font-semibold">
+                Reference
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {disclosureItems.map((disclosure) => (
+              <tr key={disclosure.srNo} className="align-top even:bg-gray-50/60">
+                <td className="border-b border-gray-100 px-4 py-4 text-gray-600">
+                  {disclosure.srNo}
+                </td>
+                <td className="border-b border-gray-100 px-4 py-4 leading-relaxed text-gray-800">
+                  {disclosure.particulars}
+                </td>
+                <td className="border-b border-gray-100 px-4 py-4 text-gray-600">
+                  {disclosure.reference ? (
+                    disclosure.reference.startsWith('/') ? (
+                      <a
+                        href={disclosure.reference}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-brand-700 hover:underline"
+                      >
+                        View PDF
+                      </a>
+                    ) : (
+                      disclosure.reference
+                    )
+                  ) : (
+                    null
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export default function IRDetail({ slug }: { slug: string }) {
   const { navigate } = useRouter();
 
@@ -62,6 +117,12 @@ export default function IRDetail({ slug }: { slug: string }) {
    * Load documents from Supabase
    */
   useEffect(() => {
+    if (slug === 'disclosures') {
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     async function loadDocuments() {
       setLoading(true);
       setError(null);
@@ -356,14 +417,16 @@ export default function IRDetail({ slug }: { slug: string }) {
         <main className="min-w-0">
 
           <h2 className="text-2xl font-bold text-brand-900">
-            Documents
+            {slug === 'disclosures' ? 'Disclosures' : 'Documents'}
           </h2>
+
+          {slug === 'disclosures' && <DisclosureTable />}
 
           {/* =====================================================
               LOADING
           ===================================================== */}
 
-          {loading && (
+          {slug !== 'disclosures' && loading && (
             <div className="mt-6 rounded-xl border border-gray-100 bg-gray-50 p-8 text-center">
 
               <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
@@ -379,7 +442,7 @@ export default function IRDetail({ slug }: { slug: string }) {
               ERROR
           ===================================================== */}
 
-          {!loading && error && (
+          {slug !== 'disclosures' && !loading && error && (
             <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-6">
 
               <div className="flex items-start gap-3">
@@ -407,7 +470,7 @@ export default function IRDetail({ slug }: { slug: string }) {
               NO DOCUMENTS
           ===================================================== */}
 
-          {!loading &&
+          {slug !== 'disclosures' && !loading &&
             !error &&
             documents.length === 0 && (
               <div className="mt-6 rounded-xl border border-gray-100 bg-brand-50 p-6">
@@ -438,7 +501,7 @@ export default function IRDetail({ slug }: { slug: string }) {
               DOCUMENT LIST
           ===================================================== */}
 
-          {!loading &&
+          {slug !== 'disclosures' && !loading &&
             !error &&
             documents.length > 0 && (
               <div className="mt-6 space-y-6">
