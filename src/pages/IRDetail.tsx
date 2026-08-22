@@ -82,7 +82,7 @@ function DisclosureTable() {
                     disclosure.url.startsWith('/') || disclosure.url.startsWith('https://krishna-filament.vercel.app/') ? (
                       <Link
                         to={disclosure.url.replace('https://krishna-filament.vercel.app', '') || '/'}
-                        className="font-medium text-brand-700 hover:underline"
+                        className="inline-flex rounded-md px-2 py-1 font-medium text-brand-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-50 hover:text-brand-800 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-1"
                       >
                         {disclosure.reference}
                       </Link>
@@ -91,7 +91,7 @@ function DisclosureTable() {
                         href={disclosure.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-brand-700 hover:underline"
+                        className="inline-flex rounded-md px-2 py-1 font-medium text-brand-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-50 hover:text-brand-800 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-1"
                       >
                         {disclosure.reference}
                       </a>
