@@ -21,17 +21,17 @@ export const disclosureItems: DisclosureItem[] = [
 	{
 		srNo: 2,
 		particulars: 'Memorandum of Association and Articles of Association',
-		reference: 'Not available',
-		url: null,
+		reference: 'Link',
+		url: '/FINAL MOA AOA.pdf',
 		type: 'file',
 	},
 	{
 		srNo: 3,
 		particulars:
 			'Brief profile of board of directors including directorship and full-time positions in body corporates',
-		reference: 'Not available',
-		url: null,
-		type: 'file',
+		reference: 'Link',
+		url: 'https://krishna-filament.vercel.app/about',
+		type: 'link',
 	},
 	{
 		srNo: 4,

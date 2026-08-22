@@ -79,7 +79,7 @@ function DisclosureTable() {
                 </td>
                 <td className="border-b border-gray-100 px-4 py-4 text-gray-600">
                   {disclosure.url ? (
-                    disclosure.url.startsWith('/') || disclosure.url.startsWith('https://krishna-filament.vercel.app/') ? (
+                    disclosure.url.startsWith('https://krishna-filament.vercel.app/') ? (
                       <Link
                         to={disclosure.url.replace('https://krishna-filament.vercel.app', '') || '/'}
                         className="inline-flex rounded-md px-2 py-1 font-medium text-brand-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-brand-50 hover:text-brand-800 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-1"
