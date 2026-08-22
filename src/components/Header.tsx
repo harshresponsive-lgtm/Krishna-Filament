@@ -6,7 +6,7 @@ import { irItems } from '@/data/ir';
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
-  { to: '/ir/investor-grievance', label: 'Investor Grievance', dropdown: true },
+  { to: '/ir/investor-grievance', label: 'Investor Relations', dropdown: true },
   { to: '/contact', label: 'Contact Us' },
 ];
 
@@ -16,6 +16,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [irDropdown, setIrDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -31,7 +32,11 @@ export default function Header() {
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const clickedOutsideDesktop = dropdownRef.current && !dropdownRef.current.contains(target);
+      const clickedOutsideMobile = mobileDropdownRef.current && !mobileDropdownRef.current.contains(target);
+
+      if (clickedOutsideDesktop && clickedOutsideMobile) {
         setIrDropdown(false);
       }
     };
@@ -133,7 +138,7 @@ export default function Header() {
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) =>
               link.dropdown ? (
-                <div key={link.to}>
+                <div key={link.to} ref={mobileDropdownRef}>
                   <button
                     onClick={() => setIrDropdown((v) => !v)}
                     className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg font-medium text-sm ${
@@ -149,6 +154,10 @@ export default function Header() {
                         <Link
                           key={item.slug}
                           to={`/ir/${item.slug}`}
+                          onClick={() => {
+                            setMobileOpen(false);
+                            setIrDropdown(false);
+                          }}
                           className="block px-3 py-2 text-sm text-gray-600 hover:text-brand-700 rounded-lg hover:bg-brand-50"
                         >
                           {item.label}
@@ -161,6 +170,7 @@ export default function Header() {
                 <Link
                   key={link.to}
                   to={link.to}
+                  onClick={() => setMobileOpen(false)}
                   className={`block px-4 py-2.5 rounded-lg font-medium text-sm ${
                     isActive(link.to) ? 'text-brand-700 bg-brand-50' : 'text-gray-700 hover:bg-gray-50'
                   }`}

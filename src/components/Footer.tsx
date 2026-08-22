@@ -143,10 +143,24 @@ export default function Footer() {
                   >
                     maviindustriesltd@gmail.com
                   </a>
+
+                  <div className="mt-5 border-t border-brand-800/80 pt-4">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-300">
+                      Corporate Identity Number (CIN)
+                    </p>
+                    <p className="mt-1.5 break-all font-mono text-base font-bold tracking-[0.08em] text-white sm:text-lg">
+                      L25200MH1988PLC048178
+                    </p>
+                  </div>
                 </div>
               </div>
 
             </div>
+
+
+
+
+            
           </div>
 
           {/* Quick Links */}
@@ -188,7 +202,7 @@ export default function Footer() {
                   to="/ir/policy"
                   className="text-sm text-brand-200 transition-colors hover:text-white"
                 >
-                  Investor Grievance
+                  Investor Relations
                 </Link>
               </li>
             </ul>

@@ -78,21 +78,26 @@ function DisclosureTable() {
                   {disclosure.particulars}
                 </td>
                 <td className="border-b border-gray-100 px-4 py-4 text-gray-600">
-                  {disclosure.reference ? (
-                    disclosure.reference.startsWith('/') ? (
+                  {disclosure.url ? (
+                    disclosure.url.startsWith('/') || disclosure.url.startsWith('https://krishna-filament.vercel.app/') ? (
+                      <Link
+                        to={disclosure.url.replace('https://krishna-filament.vercel.app', '') || '/'}
+                        className="font-medium text-brand-700 hover:underline"
+                      >
+                        {disclosure.reference}
+                      </Link>
+                    ) : (
                       <a
-                        href={disclosure.reference}
+                        href={disclosure.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-medium text-brand-700 hover:underline"
                       >
-                        View PDF
+                        {disclosure.reference}
                       </a>
-                    ) : (
-                      disclosure.reference
                     )
                   ) : (
-                    null
+                    disclosure.reference
                   )}
                 </td>
               </tr>
@@ -317,7 +322,7 @@ export default function IRDetail({ slug }: { slug: string }) {
   );
 
   return (
-    <div className="animate-fade-in pt-20">
+    <div className="animate-fade-in ">
 
       {/* =========================================================
           HEADER
@@ -326,30 +331,7 @@ export default function IRDetail({ slug }: { slug: string }) {
       <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800">
         <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
 
-          {/* Breadcrumb */}
-          <div className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-brand-200">
-
-            <Link
-              to="/"
-              className="transition-colors hover:text-white"
-            >
-              Home
-            </Link>
-
-            <ChevronRight className="h-3.5 w-3.5" />
-
-            <span className="font-medium text-white">
-              Investor Relations
-            </span>
-
-            <ChevronRight className="h-3.5 w-3.5" />
-
-            <span className="font-medium text-white">
-              {item.label}
-            </span>
-
-          </div>
-
+        
           {/* Page Title */}
           <div className="flex items-center gap-4">
 

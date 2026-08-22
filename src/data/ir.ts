@@ -5,6 +5,7 @@ export type IRItem = {
 };
 
 export const irItems: IRItem[] = [
+
   {
     slug: 'policy',
     label: 'Policy',
@@ -57,7 +58,7 @@ export const irItems: IRItem[] = [
   },
   // {
   //   slug: 'investor-grievance',
-  //   label: 'Investor Grievance',
+  //   label: 'Investor Relations',
   //   icon: 'Mail',
   // },
 ];
