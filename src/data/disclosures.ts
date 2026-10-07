@@ -29,7 +29,7 @@ export const disclosureItems: DisclosureItem[] = [
 		srNo: 3,
 		particulars:
 			'Brief profile of board of directors including directorship and full-time positions in body corporates',
-		reference: 'Link',
+			reference: 'Link',
 		url: 'https://krishna-filament.vercel.app/about',
 		type: 'link',
 	},

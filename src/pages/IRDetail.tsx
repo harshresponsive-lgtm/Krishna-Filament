@@ -198,11 +198,13 @@ export default function IRDetail({ slug }: { slug: string }) {
             file_path,
             published_date,
             is_published,
-            sort_order
+            sort_order,
+            created_at
           `)
           .eq('category_id', category.id)
           .eq('is_published', true)
-          .order('sort_order', { ascending: true });
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
 
         if (documentsError) {
           throw new Error(documentsError.message);
