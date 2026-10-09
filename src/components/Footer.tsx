@@ -1,3 +1,4 @@
+// footer file
 import { Link } from '@/router';
 
 export default function Footer() {
