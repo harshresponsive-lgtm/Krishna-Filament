@@ -1,3 +1,5 @@
+// app.tsx
+
 import { RouterProvider, useRouter } from '@/router';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
