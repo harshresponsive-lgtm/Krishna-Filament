@@ -1,3 +1,5 @@
+// updated admin protected admin routes
+
 import { useEffect, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
