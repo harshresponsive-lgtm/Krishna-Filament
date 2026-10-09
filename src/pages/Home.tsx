@@ -1,3 +1,4 @@
+// home page
 import { Link } from '@/router';
 import { irItems } from '@/data/ir';
 import {
